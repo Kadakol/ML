@@ -1,0 +1,181 @@
+Week 1 Lecture - Yann LeCun:
+
+Inspiration for DL - The brain
+
+McCulloch and Pitts - Network of binary neurons, 
+Adaline - weights are electrochemical memistors
+Hebb - Hebbian learning, neurons which fire together - increase synaptic strength and vice-versa
+Wiener - Cybernetics, sensors - actuators - feedback loops (car steering example)
+Rosenblatt - perceptron, a physical analog computer, optical sensors as well
+Hubel & Wiesel - visual cortex architecture
+
+1968 to 1984 - AI winter
+
+1985 - backprop
+Backprop works because activation function is continuous and differentiable
+Floating point computation before '85 was difficult. Hence binary neurons were used. Thus backprop could not have worked.
+
+1995 to 2010 - AI winter again
+
+Started with speech recog around 2010
+Around 2012, Android phones were using NN for speech recog
+2012 onwards, ImageNet/CV
+2016 onwards - NLP, language translation
+Next - robotics, control etc.
+
+Supervised Learning - 90%+ approaches
+
+Perceptron - 2 layers - 2nd layer trainable, 1st layer fixed (associative layer)
+
+Pattern recognition: 
+	Traditional ML:
+		image -> feature extractor (hand engineered) -> trainable classifier (trainable)
+		Feature extractor produce a vector
+		Feed the vector to a trainable classifier - Weighted sum + threshold
+		More focus was on feature extractor, less on the classifier
+
+	DL:
+		Trainable low-level, mid-level, high-level features, classifier
+		Multiple layers = deep
+		Non-linearity - 2 successive linear functions can be represented as a single linear function, so no point having multiple layers
+		
+Simplest non-linearity - ReLU/half wave rectification/positive part
+Lot of 0s generated
+Vector - Multiply by matrix (learnable) - Get a vector which is a weighted sum - Pass through non-linearity - repeat
+
+Function optimization - SGD
+Find the direction of minima and take a step
+Convergence guaranteed if function is convex, otherwise may get stuck in local minima
+SGD - empirically, converges much faster if you have a large training set; better generalization than GD
+Because of redundancy, using batch gradient descent will take a long time to converge. Samples may be repeated. So before computing the gradient, you will see all the samples hundreds of times which will add no value.
+SGD may be more efficient because updates happen immediately
+
+Backprop - practical application of chain rule
+
+To deal with images - Hubel and Wiesel - Visual cortex
+Eye model - retina - compresses the image from 100M to 1M - optic nerve is about 1M
+Some neurons turn on for particular orientations of edges etc. - focus only on a small area of the visual field
+
+Complex cells - pools activation
+Simple cells - activation changes for translation etc.; detects local features
+Complex cells become agnostic to this due to pooling
+
+CNN - LeCun 1989
+
+LeNet at Bell AT&T Labs 
+Detect objects regardless of size - move a window, wherever it activates a face is present. if window is smaller than face, subsample the image and move the window again and so on.
+
+Training a robot to drive itself
+
+Semantic segmentation
+
+MobileEye - first company to use CNNs/vision based system for self driving
+
+NN Accelerators - hottest topics now
+
+2010 - speech recog
+2013 - image recog
+2015 - NLP
+ 
+2012 - Alex Krizhevsky - Geoff Hinton's student - implemented in GPUs
+ImageNet - 1.3M samples
+LeNet - AlexNet - VGG - GoogLeNet - ResNet
+ResNet mostly used nowadays
+
+Natural data is compositional - efficiently representable hierarchy - low-level, mid-level, high-level features...
+
+MaskRCNN, RetinaNet, Feature Pyramid Network
+
+Detectron2 - panoptic instance segmentation
+
+MobileEye + NVIDIA -> Tesla driving assistance
+AEBS - Advanced Emergency Braking Systems
+
+3D ConvNet for MRI Images
+
+Any function can be approximated with 2 layers - why the need for layers?
+What is special about CNN - why do they work so well on natural signals?
+Objective functions are highly non-convex - why doesn't SGD get trapped in local minima?
+Networks are overparameterized - why don't they overfit?
+
+Learning Representations
+Basic principle - expanding the dimension of the representation so that things are more likely to be linearly separable.
+	Space tiling
+	random projections
+	polynomial classifiers
+	radial basis functions
+	kernel machines
+	
+Extreme Learning Machines - 2 layer networks, where the 1st layer is random
+
+Hierarchical representation
+
+SVM - 2 layers NN
+1st layer, a function which compares all elements pair-wise - get a distance between each pair
+Produces scores
+Weighted sum of scores
+Learn the alphas / weights
+2nd layer is trainable
+1st layer is trained unsupervised only using the X, not the Y
+Store every single X and use that as the weight of a neuron
+So 1st layer is trained unsupervised and the 2nd layer is a linear classifier
+Glorified template matching!!
+
+Doesn't work for images
+
+So why do we need deep networks when any function can be approximated with 2 layers?
+	What kind of kernel function to use?
+	Too many terms.
+	Not easy to solve.
+	
+	If the output of the 1st layer is large enough (approaching infinity), any function can be approximated.
+	
+	Very expensive to do in 2 layers
+	
+	Deep architectures trade space for time / breadth for depth
+	Eg., N bit input - number of bits on is even or odd?
+		Middle layer needs exponential terms if done in 2 layers
+		Instead, go deeper. log(N) layers. Can be done in linear complexity. 
+		Go from exponential to linear by using multiple layers.
+		
+	Eg. add 2 binary numbers - add each bit, carry, add next bit and so on... #ops proportional to number of bits N. Or, use carry look-ahead and reduce N, but higher complexity/more area on chip.
+	
+2 layers are not deep
+	No hierarchy
+	Doesn't learn complex representations
+
+1 hidden layer / SVM / kernel machines / Decision trees are not deep 
+	No hierarchy
+	
+	
+What are good features / representations?
+Manifold hypothesis
+	Natural data lives in low-dimensional manifold in the large dimension N-d space
+	Variable in natural data are mutually dependent.
+	Picture of a face
+	Number of degrees of freedom - number of muscles in the face / translation in 3D / rotation / tilt etc.
+	About 50, not more than 100
+	Out of 1M pixels (3M space), going from one picture to another, not more than 100 parameters will determine the position of a point on the surface.
+	
+A feature extractor should disentagle all of these relations.
+Find out the contribution of each feature independently.
+No one knows how exactly to do this.
+
+PCA can find the relations if the manifold is linear.
+
+================================================================================================================================
+
+Week 1 Practicum - Alfredo Canziani
+
+
+
+
+
+
+================================================================================================================================
+
+================================================================================================================================
+
+
+
+
