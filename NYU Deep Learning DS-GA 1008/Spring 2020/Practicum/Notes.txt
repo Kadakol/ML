@@ -1,0 +1,48 @@
+Week 1 Practicum - Alfredo Canziani:
+
+Linear algebra
+
+G Strang book
+3blue1brown
+
+Matrix multiplication:
+Linear transformations:
+	Rotation
+	Scaling/Stretching
+	Reflection
+	Shearing
+	Translation
+	
+Affine Transformations
+	
+Translation
+Scaling - using diagonal matrices
+
+Using matrices and scalars to move things around and zoom
+
+Singular Value Decomposition
+
+Branches of a spiral - example
+2D plane
+(x, y)
+color is a 3rd dimension - defines which class the arms of the spiral belong to
+
+Stretch the space such that all arms become linearly separable
+Finally at convergence, we get a matrix with N rows (where N represents the number of classes)
+In this case, i/p dimension is 2 (2d space). So number of columns = 2. 5 classes output, so number of rows = 5.
+
+NNs take the space fabric and apply a transformation, which is still parameterized by matrices
+
+Why do we need many matrices and non-linearities?
+	Here, we need 2 matrices
+	Input matrix = 2
+	Intermediate layer = 100
+	Non-linearity = positive part
+	Output layer = 5
+	
+Without non-linearities - looks just like a 2 layer network. And 2 layer networks can only do scaling, translation, rotation, reflection and shearing
+
+
+
+
+================================================================================================================================
