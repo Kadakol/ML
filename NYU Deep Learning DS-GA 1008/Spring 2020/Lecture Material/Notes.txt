@@ -163,7 +163,110 @@ No one knows how exactly to do this.
 
 PCA can find the relations if the manifold is linear.
 
+
+
+
+
+
 ================================================================================================================================
+
+
+
+
+
+
+
+Week 2 Lecture - Yann LeCun:
+
+Parameterized models - functions that depend on 2 parameters - input and a trainable parameter
+Parameters are shared across training samples
+In DL - parameters are stored inside, no need to pass them explicitly, in general
+
+Cost function - compare output of module with output you want
+
+Examples of parameterized functions - linear regression, nearest neighbor
+
+Loss function - average loss
+
+ML - typically minimize functions, sometimes maximize and sometimes find the Nash equilibrium between 2 functions (eg. GANs)
+Done using gradient-based methods - a method that finds the minimum of a function assuming it is easy to calculate the gradient of that function - assumes that the function is continuous and differentiable almost everywhere - OK to have small kinks in it (eg. ReLU)
+
+Gradient free methods or zeroth order methods - non-gradient-based optimization methods
+Examples - a golf course with a hole in it - no useful information at every step except for a small area; staircase like methods - again no useful information everywhere; where the function is not known, where the function might be the entire environment - not efficient to compute the gradient
+
+DL is all about gradient-based methods
+
+RL - uses gradient estimation without the gradient - cost function is not differentiable most of the times, but the network that computes the output that goes into the environment is differentiable - differentiable from that point on. Cost function - give it a y_hat and it tells you the cost value, but not the gradient. There is no y.
+RL is hugely inefficient - no y, no correct answer, just keep trying things. 
+
+SGD - for each sample, calculate the cost, find the gradient and take a step in the negative direction of the gradient - very noisy - on average, you'll move towards the minimum. Due to redundancy in samples, SGD is faster.
+Batch gradient descent - GPU is more efficient if you have batches, easily parallellize. No algorithmic superiority!
+Million samples - 10k samples repeated 100 times - redundancy. For full batch GD, all computations must be completed before you take a step. Due to redundancy of samples, this is wasted computation. For SGD, since a step is taken each time, by the time the samples start repeating, you've already seen all the data. Hence, more efficient.
+
+Good amount of batching to be efficient and to not have too much redundancy?
+Empirical - number of samples in a batch should be roughly equal (1x or 2x) to the number of cateogries (in case of classification). e.g., ImageNet - 1k classes, batch size could be 2k.
+If there is any possibility of generalization, there has to be redundancy!
+
+Traditional neural nets
+Interspersed operation of linear operations and pointwise non-linear operations
+If no non-linearities - might as well have a single layer - product of 2 linear equations is a linear equation - product of 2 matries is a single matrix
+
+Backprop
+Chain rule
+Small perturbation of input -> how much variation in output?
+Apply for non-linear and linear functions
+
+For modules - compute the Jacobian matrix and keep multiplying it during backprop.
+2 Jacobian matrices per module - with respect to z and with respect to w.
+
+LogSoftmax
+yi = e^xi / sum(e^xj)
+log yi = xi - log(sum(e^xj))
+
+What is dC/dxi?
+dC/dxi = dC/dyi dyi/dxi
+dyi/dxi = 1 - e^xi / sum(e^xi)
+
+Sigmoid output - y_bar - cost function compares with y
+Use squared error ||y_bar - y||^2 - why wont it work?
+In order to get sigmoid output 1 or 0, weights have to be very large +ve or -ve. Backprop in these regions not possible due to saturation. Gradient is almost 0.
+Instead, set the targets at 0.8 and 0.2 - this way the weights wont go to infinity
+Or, take the log of it.
+Sigmoid is a specific case of softmax - where one input is s and the other input is 0
+
+
+Backprop in practice:
+Use ReLU over tanh and sigmoid
+Cross-entropy for classification
+Use SGD on minibatches
+Shuffle the training samples
+Normalize the input - 0 mean, unit variance
+Use LR decay
+Turn on L1 or L2 (or both) regularizarion on weights after a couple of epochs - initially weight initialization is a saddle point. Turing L1 or L2 on initially will push weights to 0 and then nothing will work.
+Use dropout for regularizarion
+Read paper Efficient Backprop
+Neural Networks, Tricks of the Trade - Book
+
+Cross-entropy loss function expects LogSoftmax, not Softmax
+
+RGB image - 3 separate channels
+Find the mean across all the values in blue - m b
+Find the standard deviation across all values in blue - sigma b
+Similarly for red and green - m r, sigma r, m g, sigma g
+6 scalar values found
+For each value in the r channel, subtract by mean and divide by standard deviation (or max(sigma, epsilon)). Similarly for green and blue. Doing this per channel is better. Gets rid of global illumination. E.g., sunlight low blue amplitude, underwater low red amplitude.
+Normalizes the contrast and makes the variance 0
+
+Weight decay - minimize the cost function but also do it with smallest weights possible - L2
+
+Lasso regularizarion - Bring the weight values to 0 if it is not useful - L1
+
+Initialization is important!
+Kaiming initialization - weights to have 0 mean and variance to be proportional to the inverse of the sqrt of the number of inputs
+
+Any directed acyclic graph is OK for backprop
+
+
 
 
 ================================================================================================================================
