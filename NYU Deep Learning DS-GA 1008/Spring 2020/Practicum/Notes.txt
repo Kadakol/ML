@@ -45,4 +45,91 @@ Without non-linearities - looks just like a 2 layer network. And 2 layer network
 
 
 
+
+
 ================================================================================================================================
+
+
+
+
+
+
+Week 2 Practicum - Alfredo Canziani:
+
+Neural nets - used for rotation and squashing
+
+ANN - supervised learning - classification
+
+3 branches of a spiral
+R2 - 2D space
+colors - labels
+
+Logistic regression - linear decision boundaries
+points cut across decision boundaries. Not linearly separable.
+
+Training data:
+X E R^n
+
+X = m x n (data - m rows, n columns. In this case, n=2 for 2D space. So m x 2)
+c = Column vector - m x 1 - c1, c2..., cm, where ci E {1, 2, ... K}. Here, there are 3 classes. So K=3.
+Y = 1-hot encoded values of c - m x K. The 3 classes here are 100, 010, 001. So Y is of dim m x 3.
+
+FC connected layer
+         h
+x -> f -> g -> y^
+  Wh   Wg
+
+h = f(Wh x + bh)
+y^ = g(Wy h + by)
+
+Affine transformations = rotations
+Non-linear functions = squashing
+
+f and g are non-linear functions
+
+Rn -> Rd -> Rk
+Where dimensionality of d is much higher than dimensionality of n
+Why? - In high dimension space, everything is far apart. Makes it easy to rotate, scale each point.
+Instead of having 100 neurons in one layer (very fat network), use 2 layers of 10 neurons each (deeper) to get the same thing.
+1000 = 10 x 10 x 10
+Fewer neurons, lesser to store. But deeper = slower. Wider = need more parallel hardware and can be executed.
+
+Input = 2d space
+Intermediate = 100d space
+Output = 3d space
+
+Input to the softargmax layer is called logits, which are the outputs of the final layer
+L(Yhat, c) = (1/m)(sum(l(yhati, ci))), l(yhat, c) = -log(yhat[c])
+l = negative log-likelihood / cross entropy 
+x, c = 1, y = (1 0 0)
+yhat(x) = (~1 ~0 ~0) => l( (~1 ~0 ~0) , 1) -> -log(1-) -> - 0- -> 0+
+yhat(x) = (~0 ~1 ~0) => l( (~0 ~1 ~0) , 1) -> -log(0+) -> - -inf -> inf
+
+Training a neural network
+h = f(Wh x + bh)
+yhat = g(Wy h + by)
+theta = {Wh, bh, Wy, by}
+J(theta) = L(Yhat(theta), c)
+Gradient descent
+
+dJ / dWy = dJ / dyhat * dyhat / dWy
+dJ / dWh = dJ / dyhat * dyhat / dh * dh / dWh
+
+=> backpropagation
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
