@@ -270,9 +270,85 @@ Any directed acyclic graph is OK for backprop
 
 
 
-================================================================================================================================
 
 ================================================================================================================================
+
+
+
+
+
+
+
+Week 3 Lecture - Yann LeCun:
+
+Alf's demo:
+Classification - deep network with only 2 neurons per layer
+Rotation, reflection, scaling/zooming, translation from the affine transformations + bias + non-linearity to get rid of the negative part - repeat a few times until points become linearity separable
+
+Weight sharing - two weights are forced to be equal to each other
+
+Hypernetwork - Weights are computed as a function of X, which are then applied to transform X to produce Y
+
+Shared weights for motif detection
+Same weights applied on different sub-sequences of the signal - go to a max function - this is the output
+E.g., wakework detection - Alexa - within a given sequence, the word Alexa is present somewhere, doesn't matter where.
+
+During backprop, compute gradients for each of the copies of the transformation function and sum it up, since the same set of weights are being used for all of the transformation functions.
+PyTorch - handles this accumulation implicitly. Hence, need to zero out gradients at each step.
+
+C and D detector - detect endpoints and edges
+
+Equivariance to shift - output will shift since the input is shifted, but no other changes
+Invariance to shift - no change in the output due to shift
+
+Learn these templates as weights of a NN
+
+Discrete convolution / Cross-correlation
+
+Conv - non-linearity - pooling
+stride, padding
+
+Layers - hierarchical representations of natural data
+
+How the brain interprets images
+One pathway for WHAT, another pathway for WHERE
+
+Hubel and Wiesel - repeat from lecture 1 - simple and complex cells
+
+First convnets
+Tanh activation
+
+As you go deeper, due to pooling and subsampling, amount of shift in the feature map due to shift in the input keeps decreasing. This makes it easier for the later layers to interpret what is present in the image - shift equivariance
+
+Normalization - batch norm, group norm
+Pooling - max, Lp norm, log prob
+Max = max(Xi); Lp = sum(Xi ^ p) ^ 1/p ; LogProb = (1/b)log(sum(e^bXi))
+A good pooling operation is one which gives the same result irrespective of the permutation of the input
+
+Multiple character recognition
+If network is fully convolutional, changing the size of the input will make the network adapt such that the size of the output changes.
+Cursive handwriting - take a 32x32 window and slide it across each time and get the output - wasteful
+Instead, pass the whole image as input and that will produce an output which is proportional to the input image
+Train a network to identify individual numbers. At each 32x32 location, with an offset of 4, keep sliding the window until a character is found. This is highly wasteful.
+Instead, pass the whole image as input. It produces an output related to the size of the input. This is much cheaper to do than to do repeated convolutions.
+
+"minimum" cursive writing example - in order to detect an object you need to segment it first, but in order to segment it you need to detect it first. So both need to be done together. 
+
+40% change in size may be acceptable for typical CNNs
+
+What are convnets good for?
+- Signals with multi-dimension arrays
+- Signals with strong local correlations
+- Signals where features can appear anywhere
+- Signals where objects are invariant to translations and distortions
+- 1D ConvNets - sequential signals, text
+- 2D ConvNets - images, time-frequency representation (speech and audio)
+- 3D ConvNets - video, volumetrics images, tomography images
+
+
+
+
+
 
 
 
