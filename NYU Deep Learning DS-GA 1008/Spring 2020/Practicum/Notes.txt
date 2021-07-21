@@ -211,8 +211,85 @@ Choose some information but throw away others
 
 
 
+================================================================================================================================
 
 
+
+
+
+
+Week 4 Practicum - Alfredo Canziani:
+
+Linear algebra review
+
+h = f(z); where z = Ax; x E Rn, z E Rm => A = m x n
+
+a11, a12..., a1n	x1
+a21, a22..., a2n	x2
+.
+.
+am1, am2..., amn	xn	
+
+=
+
+--a(1)--	|
+--a(2)--	|
+.			x
+.			|
+--a(m)--	|
+
+
+= 
+
+a(1)x
+a(2)x
+.
+.
+a(m)x
+
+= 
+
+z1
+z2
+.
+.
+zm
+
+= z
+
+
+What is aT x , when n = 2? (T => transpose)
+
+a and x - points in 2D plane
+angle between a and x-axis = alpha
+angle between x and x-axis = psi
+
+a1x1 + a2x2 = ||a|| cos(alpha) ||x|| cos(psi) + ||a|| sin(alpha) ||x|| sin(psi)
+= ||a|| ||x|| (cos(alpha)cos(psi) + sin(alpha)sin(psi))
+= ||a|| ||x|| cos(psi - alpha)
+
+cos(0) = 1 - if both vectors are aligned, max value
+cos(180) = -1 - if both vectors are in opposite directions, min value
+
+Linear layer - what is the projection of the input on each row? That is effectively what is computed. Alignment of the input with respect to each row of the matrix
+
+
+OR
+
+		|		|			  |
+z = 	a1x1 +  a2x2 + ... +  anxn
+		|		|			  |
+
+Weight each column of the matrix with corresponding coefficient from the input vector
+
+Extension to convolutions
+
+Locality, stationarity
+Weight sharing, sparsity
+
+Toeplitz matrix - sparse matrix
+
+Convolution is basically matrix multiplications with a lot of zeros
 
 
 
