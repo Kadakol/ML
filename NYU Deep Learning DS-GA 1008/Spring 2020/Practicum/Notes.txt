@@ -296,3 +296,40 @@ Convolution is basically matrix multiplications with a lot of zeros
 
 
 
+================================================================================================================================
+
+
+
+
+
+
+Week 5 Practicum - Alfredo Canziani:
+
+Monophonic signal - 1 channel
+Stereophonic signal - 2 channels
+
+Audio signal
+x: Omega -> R^c, where c = 1 or 2 or ..., Omega is {0, 1, 2 ....} subset of N^1 => 1D signal/1D domain
+
+How to use conv with 1d and 2d signals.
+
+Autograd tutorial - Already completed - 03_autograd_tutorial.ipynb
+
+Gradient descent != backpropagation
+
+a = (1/4)sum(z)
+z = 3y^2 = 3(x-2)^2
+
+a E R
+
+da/dx = 1/4 . 3 . 2 . (x-2) = 1.5x - 3
+x = [1 2
+	 3 4]
+da/dx = [-1.5 0
+		 1.5  3]
+		 
+
+
+
+
+

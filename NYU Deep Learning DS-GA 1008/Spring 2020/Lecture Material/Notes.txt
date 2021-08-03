@@ -350,6 +350,154 @@ What are convnets good for?
 
 
 
+================================================================================================================================
+
+
+
+
+
+
+
+Week 5 Lecture - Aaron Defazio:
+
+Optimization
+
+Gradient Descent - worst optimization method in the world :D
+Iterative
+wk+1 = wk - gammak * grad(f(wk))
+Assume f(w) is continuous and differentiable, although functions used in DL are not differentiable at every point
+
+Take a step in the negative gradient
+
+Intuition for quadratics
+Gradient descent directly cuts off one half of the solution space
+
+How to choose a learning rate?
+Too small learning rate - slow convergence
+Too large - can lead to divergence
+Perfect learning rate - may only be possible to find in quadratics, for example - go to the solution directly
+Slightly large but not too large learning rate - faster convergence, but more zig-zagging - choose a rate which is at the edge of divergence
+
+Stochastic optimization (why a rough estimate now is better than a good estimate in a week)
+Instead of the gradient, use the stochastic approximation of the gradient in GD
+Instead of full gradient, use the stochastic gradient
+GD - worst method - use the full dataset to calculate the gradient
+SGD - best method - calculate the gradient at each point, for each data sample
+SGD = GD + noise
+
+The noise in SGD leads to annealing (prevent convergence to a bad local minima)
+Redundancy across instances - noise is lower when redundancy is higher - SGD helps exploit this redundancy
+Gradient computed on a few 100 examples is almost as good as the gradient computed on the entire dataset
+In early stages of optimization, noise is minimal compared to the information in the gradient. SGD step is almost as good as a GD step.
+
+Mini batches used instead of single instances
+Random subset of samples used. Some use with replacement and some use without replacement - not important though
+Practical reasons - use batches instead of single samples
+ImageNet - use at least 64 batch size
+Also, distributed training
+
+Sometimes, you may need to use full-batch for optimization. Don't use GD. In this case, use LBFGS, either from torch.optim.LBFGS or from scipy.optimize.fmin_l_bfgs_b
+
+Why use minibatches which are equal to the number of classes in the dataset? So that the minibatch is representative of the full dataset.
+
+Local minima were a problem 15 years ago, but with SOTA networks this does not seem to matter much. Almost never encounter local minima when recommended parameters are used.
+
+Residual connections - help in smoothening the loss
+
+Momentum:
+Always use with SGD
+SGD + Momentum = Stochastic heavy ball method
+In every step, update p(momemtum) and w(weight)
+Dampens the oscillation a bit compared to vanilla SGD
+Beta needs to be between 0 and 1. 0 => just SGD, >1 => everything blows up.
+Typical values of beta range from 0.25 to 0.99.
+Smaller values lead to change in direction quicker
+Larger values - slower reaction to change in landscape
+
+Always use momentum - 0.9 or 0.99
+Going from 0.9 to 0.99 => reduce learning rate by a factor of 10
+
+Acceleration
+Nesterov's momentum vs regular momemtum
+By choosing the constants properly, Nesterov's momemtum accelerates convergence on problems with simple structure (convex)
+Regular momentum accelerates only on quadratics
+
+Nesterov's momemtum usually performs the same as regular momemtum while training NNs.
+
+Noise smoothing
+Momentum smooths the noise from the stochastic gradients.
+
+SGD - mostly used for optimization.
+
+Adaptive methods:
+Instead of using the same learning rate across all layers, maintain an estimate of a better rate for each weight separately
+
+RMSProp:
+Exponential moving average
+Calculate the 2nd moment estimate
+Avoid dividing by 0 - put epsilon at the denominator - 10^-7 or 10^-8 - close to the machine epsilon
+
+Adam:
+Adaptive moment estimation
+RMSProp with momemtum
+Momentum improves SGD and RMSProp
+Adam uses bias correction, since initially the momemtum buffer is started from all 0s. 
+
+For poorly conditioned problems, Adam works much better than SGD
+
+But Adam has known disadvantages:
+- Does not converge for simple problems
+- Worse generalization error on CV (e.g. ImageNet)
+- More memory than SGD
+- 2 momentum parameters, needs some tuning
+
+Try both SGD + momemtum and Adam on different learning rates and use which works better on held out data
+
+Use SGD at the beginning and Adam at the end! Try to avoid this.
+
+Normalization layers:
+e.g. Conv -> Batch Norm -> ReLU
+
+y = (a/sigma) (x - mu) + b
+
+a and b are learnable parameters
+a = learnable scaling factor
+b = learnable bias term
+mu = estimate of the mean of the activations
+sigma = estimate of the standard deviation of the activations
+x = input activations to the normalization layer
+
+Batch Norm, Layer Norm, Group Norm, Instance Norm
+
+Why does normalization help?
+Reduces internal covariate shift. Not clearly understood.
+- optimization effect
+- regularizarion effect
+- reduces sensitivity to weight initialization
+- allows you to combine almost any neural network building blocks together and it may just work
+
+For Batch Norm, backprop has to be done through the mean and standard deviation. If not done, it diverges.
+Recommended - Group Norm - good to use with group size 32
+BN and IN - mu and sigma are fixed after training. Not recomputed every time the network is evaluated. For GN, LN - not necessary
+
+The death of optimization:
+MRIs capture images in the Fourier domain in terms of rows and columns. Converting from Fourier domain to image domain is a linear transformation and is quite straightforward.
+How to accelerate the data capture from MRIs? - skips a few rows and columns while capturing - problem - can't use Fourier Transform / linear operation anymore to go from Fourier domain to image domain
+
+Compressed Sensing - get a perfect reconstruction from subsampled measurements
+Assumptions for this to work - need a sparse image - lot of 0s. It can be represented sparsely using a wavelet decomposition.
+
+UNet used to reconstruct the MRI images
+
+
+
+
+
+
+
+
+
+
 
 
 
