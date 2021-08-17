@@ -494,6 +494,125 @@ UNet used to reconstruct the MRI images
 
 
 
+================================================================================================================================
+
+
+
+
+
+
+
+Week 6 Lecture - Yann LeCun:
+
+NMS
+Deformable parts model
+ConvNet with different widths for each classifier - for the last layer
+Produce a score at the end
+Take an average of scores across these models
+
+Think of it as a graph - shortest path algorithm to find the sequence of characters
+
+Face detection
+Collect a dataset - images with faces and images without faces
+Problem
+- images without faces not representative - couldn't have seen all such cases. So lots of false positives - Handle this using negative mining - go through a large dataset of images which have no faces and see where the detector fires (wrongly). add this patch to the negative cateory and train the detector and repeat the process 4-5 times
+- faces may not be of fixed size - take a multiscale approach - downscale by 2 each time and run the detector - 1 + 1/2 + 1/4 + 1/8 + ... = 2 - so not so expensive
+
+Semantic segmentation - every pixel is assigned a category
+
+Robot driving - classify obstacles and areas where the robot can drive
+
+Stereo vision - works upto approx 10 meters. Beyond that it is not reliable.
+
+Pass an image through a convnet and get a set of feature maps
+Downsample by 2 and repeat
+Downsample by 4 and repeat
+Then upsample the 2 and 4 feature maps and concat everything together
+
+
+Recurrent Nets
+
+Networks with loops - for backprop, unroll the loop
+Backprop Through Time - BPTT
+Don't work very well in their naive form
+Vanishing and exploding gradient problem - if weight matrix is very small, propagating through the weight repeatedly for multiple time steps will lead to almost no gradients at the first time step; conversely for the case with large weights
+Purpose of recurrent nets - be able to remember things from the past
+Tricks need to be used to make RNNs work
+
+Multiplicative Modules
+
+Networks whose weights are computed by other networks - hypernetworks
+Route networks through NNs in a data dependent way
+e.g. Attention Module - allows the NN to focus its attention on a particular input and ignores other inputs. Useful in LSTM and GRUs but especially used in all NLP systems
+
+GRUs - Gated Recurrent Units
+
+input, output, update gate, reset gate
+Update gate - selectively chooses what to be remembered, either simply the previous hidden state or the current state or some combination of the current input and the previous state
+
+LSTM - Long Short Term Memory
+
+input, forget gate, input gate, output gate, hidden state, cell state
+
+LSTMs were used for speech recog. Now, people prefer to use temporal convnets and Transformers for NLP
+One of the first recurrent nets which worked
+Used for translation - Neural Machine Translation
+Multi-layer LSTM for NMT - input layer LSTM, multiple time steps, take the hidden state of each and pass to a hidden layer LSTM and so on. Finally end up with one vector which represents the whole sentence. Take this vector and pass it to another multi-layer LSTM which produces one word at a time, pass this output along with the previous LSTM hidden state to the next LSTM and so on until you get the full sentence.
+
+Problems:
+The whole meaning of the sentence needs to be encoded in one small vector which is passed from the encoder to the decoder.
+LSTMs preserve memory for about 20 words. By the time you hit the 20th word, the LSTM would have forgotten the first word. Fix for this is Bi-LSTM - run 2 LSTMs in opposite directions - 2 codes obtained - one from forward sentence running LSTM and the other from the backwards sentence running LSTM - allows doubling the length of the sentence without much loss
+
+Sequence to sequence with attention
+Attention decides at a given time step, which of the words to focus on to produce a given output word
+Attention is just another set of weights that can be trained using backprop automatically
+Attention changed everything. Everyone started focusing on attention and deploying systems with attention especially for NMT.
+
+
+Memory Networks
+
+End-to-end memory networks
+Hippocampus for short term memory
+Cortex for long term memory
+
+x - memory address
+compare with a bunch of ks - k1, k2 ... using dot product [keys]
+Push these comparisons through a softmax
+These will give a set of numbers between 0 and 1
+Multiply these scalars with another set of vectors v2 - v1, v2.... [values]
+Sum them up
+This makes an addressable associative memory
+Keys and Values can be changed via backprop
+
+Useful for question answering etc.
+
+Example - Input to NN, access memory, get back data to NN, keep repeating and give an output 
+
+Neural Turing machine - similar to above idea, but uses a soft tape for memory
+
+Transfomer is basically a NN where every group of neurons has memory (input, key value described above)
+
+
+
+
+
+
+================================================================================================================================
+
+
+
+
+
+
+
+Week 7 Lecture - Yann LeCun:
+
+
+
+
+
+
+
 
 
 

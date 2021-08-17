@@ -327,7 +327,97 @@ x = [1 2
 	 3 4]
 da/dx = [-1.5 0
 		 1.5  3]
-		 
+
+
+
+
+
+
+================================================================================================================================
+
+
+
+
+
+
+Week 6 Practicum - Alfredo Canziani:		 
+
+RNN and LSTM
+
+Temporal data - 1D
+One to many - Single input - generates sequence of words [e.g. input image - output sequence describing the image] - vec -> seq
+Many to one - sequence of inputs - generates a single output [e.g. learning to execute: input python program - output is output of program] - seq -> vec
+Many to many - sequence of inputs - compressed to a vector - generates sequence of outputs [e.g. language translation] - seq -> vec -> seq
+Many to many - sequence of inputs - generate sequence of outputs at the same time [e.g. GPT - given a sequence/prompt, suggest the next set of words/lines] - seq -> seq
+
+Autoregressive network - loops - previous output given as input to next time step
+
+RNNs are similar to CNNs in the sense the same weights are shared across time steps - kind of a convolution
+
+Take a sequence - abcdefghij...z
+Create batches - 
+agms
+bhnt
+ciou
+djpv
+ekqw
+flrx
+Batch size = 4
+
+BPTT period T = 3
+Get batch -
+agms -:
+bhnt  : - x[1:T]   -:
+ciou -: 		    :- y[1:T]
+djpv			   -:
+
+Given a letter, predict the next letter. But do it in batches.
+
+    y[1]	y[2]	y[T]
+    bhnt	ciou	djpv		
+      ^       ^       ^
+h[0]  |  h[1] |  h[2] |   h[T]
+-/-> RNN  -> RNN  -> RNN  -/->
+      ^       ^       ^
+      |       |       |
+    agms    bhnt    ciou
+    x[1]    x[2]    x[T]
+
+Why does h[t] have a -/-> ? So that the gradients do not backpropagate forever. Done using .detach() in PyTorch.
+
+Vanishing and exploding gradients:
+Horizontal arrows betwen hidden states -> The previous hidden state is rotated via matrices to get the next hidden state
+Based on the matrices, the gradients will either be amplified (exploding) or killed (vanishing)
+
+RNNs were the first deep networks in the 90s. The depth was in terms of time.
+
+In modern deep networks, how to avoid vanishing gradients? By using skip connections!
+Same concept could be used with RNNs.
+
+How to avoid vanishing gradients?
+Don't propagate gradients through matrices, i.e., don't propagate forward through matrices
+
+Instead of using 1 RNN, use 4. Gated Recurrent Neural Networks - use 4 simple RNNs merged together such that there is multiplicative interaction and not matrix interaction.
+
+
+LSTM - Gated RNNs
+input, don't forget, output, candidate gate
+input, don't forget and output are all sigmoids - 0 to 1 - 0 means don't allow, 1 means allow
+Control the output - saturated sigmoid - 1=on, 0=off - if sigmoid is at 0, internal state is not propagated out via h[t], if 1 - reverse i.e., internal state is outputted via h[t]
+Control the memory - reset, keep and write - control the don't forget gate and the input gate together 
+- if input gate is 0 and don't forget gate is 0 - the output of c[t] will be 0, hence reset, i.e., erase the memory
+- input gate 0, don't forget 1 - output c[t] will be c[t-1] - memory is kept as is
+- input gate 1, don't forget 0 - output c[t] will be influenced by input - hence write
+
+5 steps:
+1. Forward pass - compute the output of the model for a given input
+2. Compute the loss
+3. Zero grad - clear the cache
+4. Backward - compute the partial derivatives of the loss w.r.t. the network's parameters
+5. Optimizer step - take a step in the reverse direction
+
+LSTM has 4 times the weights as the simple RNN
+
 
 
 
