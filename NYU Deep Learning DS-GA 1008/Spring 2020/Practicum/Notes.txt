@@ -423,3 +423,78 @@ LSTM has 4 times the weights as the simple RNN
 
 
 
+================================================================================================================================
+
+
+
+
+
+
+Week 7 Practicum - Alfredo Canziani:		
+
+Paper - StyleGAN - faces - approx 50 degress of freedom - although the pixel space is very high dimensional, the data manifold is in a smaller subspace
+2 images - dog and bird - 
+linear interpolation in pixel space => superposition - images overlaid on each other
+linear interpolation in latent space => creates a bird+dog all the way till a dog+bird
+Paper - Large scale GAN training for high fidelity natural images synthesis
+
+Transformations, SR, Inpainting, caption to image
+
+Autoencoders
+Unsupervised learning
+
+Easiest thing for an autoencoder to learn is the identity matrix
+If the hidden dimensionality is lower than the input dimensionality, then it becomes harder to learn the identity matrix
+Encoder can work as a compressor. e.g., image compression. This is just one way to think about this, but it is not proper.
+
+Task of autoencoder is to reconstruct data which lives on the data manifold - a small subset of possible inputs, i.e., cannot reconstruct data which is away from the manifold
+E.g., image of face with a patch blanking it out. This takes the data away from the manifold. But the autoencoder can only reconstruct data which is on the manifold. So when it takes this image with patch as input, it will reconstruct an image without a patch. So the autoencoder is basically insensitive to perturbations.
+
+Reconstruction losses:
+Binary Cross Entropy
+MSE
+
+Under/over complete hidden layer
+Under-complete - hidden layer size is smaller than input size
+For under-complete - cannot simply use a identity function
+Autoencoder can be for compression
+
+Over-complete - hidden layer size is greater than input size
+Larger intermediate space => easier optimization
+Info in the input layer and the hidden layer will still be the same, but it becomes easier for the network to manipulate the data since it has more dimensions
+Becomes easy to learn the identity matrix. Hence, some constraints need to be added, i.e., bottleneck the information.
+The hidden representation should only be that which the data on the manifold can have.
+
+Even for under-complete, it is very easy to overfit. The hidden layer can simply be one neuron and the encoder and decoder can be powerful enough such that the intermediate representation is simply a map which memorizes the encoder data and the decoder can simply select the appropriate training data point from the hidden layer. So, both the under and over-complete autoencoders can overfit unless care is taken to prevent this.
+Options - contrastive, regularized, architectural
+
+Denoising autoencoder:
+Choose a training data input, corrupt the input, push the data away from the data manifold, force the network to reconstruct the data which is on the manifold. Basically, learn a vector field which will push the data close to the data manifold back onto the manifold itself. The assumption is, the same kind of noise distribution is injected during training which is expected to be seen during testing.
+
+If data is on the manifold, they will not move. If data is away from the manifold, it will move a lot, closer to the manifold. The amount of movement is the energy.
+
+Regularized autoencoder:
+Add an l-1 regularization cost term on the hidden representation
+Force the network to come up with hidden representations which are short of a few dimensions
+This means only a few neurons will be active at a given time
+
+Contractive autoencoder:
+Loss function = reconstruction loss + gradient of hidden representation w.r.t. input norm square
+Minimize variations of the hidden layer given variations of the input - find a representation of the hidden layer which does not change that much when the input is changed a bit
+The reconstruction loss penalizes insensitivity to reconstruction direction
+The second term penalizes sensitivity to any direction, i.e., no assumptions over the perturbations being applied. It is simply insensitive to everything. 
+
+Basic autoencoder
+x lives in high dimension space
+The autoencoder has to bring the x to z, the latent dimension, which is in a smaller dimension (e.g., a line)
+The autoencoder learns how to map points in the input space to points in the latent space. How to map regions in the input space to regions in the latent space? By learning this mapping, you can go from the input space to the latent space and back. 
+Denoising autoencoder take a point from the input, perturbs it and still has to go the same point in the latent space so that you can go back to the original point in the input space.
+In contractive autoencoder, wiggle the input, minimize the movement in the latent space.
+
+How can you start from the latent space, move around and get something which looks like something which belongs in the input space? Not sure exactly how the decoder behaves when we move from latent space to input space when the point on the latent space is not among the points which were used during training.
+
+
+
+
+
+

@@ -607,6 +607,146 @@ Transfomer is basically a NN where every group of neurons has memory (input, key
 
 Week 7 Lecture - Yann LeCun:
 
+Energy-based models
+
+Probabilistic models are a special case of energy-based models
+
+Given X, predict a Y - where X and Y can be anything, images, an input image for which a sentence needs to be predicted etc. Fixed number of computations can be performed to get the prediction.
+Not applicable if more complicated computation is needed - something more than weighted sums and non-linearity - inference is complex. Also if a set of outputs need to be produced instead of a single output (high dimensional continuous space. e.g., if the output is an image, there is no way to have a set of images as output and do something like a softmax over all of them. Or if the output is text - how to represent a score over all possible text in a compact form?)
+
+Energy-based models can help here. Instead of predicting Y, ask the system if the X and Y are compatible with each other
+Inference - Given X, find Y such that F(X, Y) produces a low value
+Energy minimization - for e.g., multiclass classification finds a score which has the minimum energy
+Find an output that satisfies some constraints, which is defined by F(X, Y)
+Energy is minimized during inference, not during learning
+Energy-function is a scalar value - low when y is compatible with x and higher when y is less compatible with x
+There may be multiple solutions
+
+Feed-forward model is an explicit function which computes y from x
+EBM is an implicit function which captures the dependency between x and y - e.g., equation of a circle - Solve x^2 + y^2 - 1 = 0 to get a unit circle
+Multiple y can be compatible with a single x
+
+If y is continuous, can use a gradient-based method for inference
+
+When is inference hard?
+- high dimensional object structure - sequence, image, video
+- output has compositional structure - text, action sequence
+- output results from a long chain of reasoning - can be reduced to an optimization problem
+
+Inference involving latent variables
+Latent variables are variables whose value is never given to us
+e.g.
+handwritten word - helps to know where the characters are
+speech recog - helps to know where the words and phonemes are
+
+Latent-variable EBM - inference
+Simultaneously minimize E w.r.t. y and z 
+F_infinity(x,y) = min_z E(x, y, z)
+Take a function of x y z, find the minimum of the function over z, z gets eliminated which gives a function of x and y
+
+For a given x, by varying the latent variable z, you can have multiple outputs y
+As z varies over a set, y varies over the manifold of possible predictions
+Useful for multiple correct/plausible outputs - e.g., video prediction, text generation, translation, image synthesis
+
+Predictor should be able to deal with uncertainity and make multiple predictions and the way the predictions are parameterized is through the latent variable
+
+z is not learnt. It is inferred.
+
+EBM vs probabilistic models
+From energy to probability - using Gibbs-Boltzmann distribution
+Probabilistic models are a special case of EBMs
+
+Probabilistic models in high dimensional spaces and combinatorial situations (like text) are all approximate models, they're all wrong, and normalizing them makes it more wrong. So it's better to not normalize them. 
+
+Insisting MLE in these cases makes no sense - infinite probability for values on the manifold and 0 probability for all others. Not practical to find such a model. Weights will have to be calibrated such that they are infinite for certain areas and 0 for all others and the integral sums up to 1, which is not possible.
+
+
+Self-supervised learning
+
+BERT is trained using self-supervised learning - denoising autoencoder
+Purpose of self-supervised learning is to train a system to learn good representations of the input, and those representations are subsequently used for another supervised learning task or Reinforcement Learning task
+
+Filling in the blanks - predict a part of the input from any other part
+Train a system to learn about what the scene would look like when the camera shifts - it will inherently learn about depth of the image without having to explicitly train it to do so
+Background and foreground
+Animate and inanimate objects
+Objects which are not visible are still there
+
+NLP
+Denoising autoencoder
+Remove 10-20% of the words and make the system predict those words in a sentence
+Train it as a classifier with a big softmax over a set of words which corresponds to a probability distribution over words
+After training, throw away the last layer and use the 2nd last layer as a representation of the text which is inputted
+Input -> Encoder -> Code -> Decoder 
+
+Image - this doesn't work so great
+The representation of the image is not as great as that produced by a supervised learning system trained on ImageNet
+
+NLP is discrete whereas images/videos/signal/audio are continuous
+In discrete, able to represent uncertainity using a softmax. Can't do the same for continuous.
+
+How to make high-dimensional predictions under uncertainity - biggest challenge in AI
+
+In a stochastic world, training a system to make a single prediction makes it predict the average of all plausible predictions
+E.g., stand a pen and drop it each time at the same place each time - pen falls in different places each time => for the exact same x, many different y. If the system has to make a single prediction, it would be the pen present in all places at the same time.
+This is why latent variable EBMs are needed.
+
+The role of z is to parameterize the set of outputs that can occur. In the end, z is supposed to contain information in y which is not present in x.
+
+k-means is an EBM
+
+Training an EBM
+Shape F(x,y) such that the data points have lower energy than everything else
+
+2 classes of learning methods:
+1. Contrastive methods - Take xi yi and change the parameters of the model such that the energy goes down. Then pick a bad y for all given x and push the energy up. This way the correct y will have lower energy than the bad y. These differ by how you pick the y and the loss function used to push up and down.
+2. Architectural methods - build F(x,y) such that the volume of low energy functions is minimized or limited via regularizarion. When you push the energy of data points down, the rest goes up automatically since the volume of stuff which can take low energy is limited.
+
+7 strategies to shape the energy function
+C1 - Maximum likelihood - push down the energy of data points to -infinity and all other points to +infinity
+Monte Carlo approximation - In order to calculate the expected value of a function, instead of computing it, it can be approximated by computing the average of the gradients for a limited set of samples.
+Variational methods - approximate the expectation over a distribution by replacing the distribution with something you can compute and try to make the computable distribution as close as possible to the real distribution using some measure like the KL divergence
+
+K-means - EBM
+Clustering algorithm
+E(y,z) = ||y - Wz||^2, z E 1 hot
+Select one column from W
+The columns of W are called prototypes
+Goal - minimize the average of the energy over the training set
+Architectural methods
+Only K points can have 0 energy. The volume of space which can have low energy is fixed.
+
+Most people will use architectural methods
+Contrastive methods work well for images right now
+
+Pick a point where the energy is supposed to be low, but is high. Push down the energy on that. Perturb the point a bit and for all those points, push the energy up a bit. This way the energy function curls up around each data point.
+
+Randomly kick the point and do GD. Let it keep following a trajectory. Cut it off at some point. Then push up that point and pull down the original point. 
+
+Random noising - denoising autoencoder
+GD with random kick - contrastive divergence; special case of Monte Carlo; Marco Chain Monte Carlo; Hamiltonian Monte Carlo
+
+Denoising Autoencoder
+Only have y
+Corrupt it. Pass it through an encoder and then a decoder.
+Compare the output, which is a reconstruction for y, with y. May just be the distance between y and y_bar
+The corruption is not trained. It is only used during training.
+This pushes up the energy of the corrupted points
+For inference, just pass the y through the encoder-decoder and compare the y_bar with y
+
+During inference, if the input y is on the manifold of the original data, it will be reconstructed as-is. Hence the reconstruction error will be 0.
+If the input y is not on the manifold, it will be reconstructed as a closest point on the manifold since that's how it's been trained. Then you get a larger reconstruction error.
+The energy computed by the DAE will grow quadratically as the point moves away from the manifold of data
+This is how BERT is trained, except the space is discrete since we're dealing with text and the corruption is masking some words and reconstruction is predicting the words which are missing.
+A special case of DAE - masked autoencoder - corruption is basically masking
+
+
+
+
+ 
+
+
+
 
 
 
